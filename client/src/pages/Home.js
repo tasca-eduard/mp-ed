@@ -11,7 +11,7 @@ const Home = () => {
     const getUsers = async (e) => {
         e.preventDefault();
 
-        let data = await fetch('/getUsers', {
+        let data = await fetch('/users/getUsers', {
             method: "get"
         })
 
@@ -41,9 +41,7 @@ const Home = () => {
             password: passwordRef.current.value
         }
 
-        console.log(postData)
-
-        let data = await fetch('/addUser', {
+        let data = await fetch('users/addUser', {
             method: "post",
             body: JSON.stringify(postData),
             headers: {
