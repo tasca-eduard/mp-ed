@@ -54,10 +54,6 @@ const Home = () => {
         setNewUser({...data})
     }
 
-    // username: req.body.username,
-    // email: req.body.email,
-    // password: req.body.password
-
     return (
         <>
             <div>
