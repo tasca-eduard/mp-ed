@@ -1,17 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const server = express();
 router.use(express.json());
 
 const mongoose = require('mongoose');
 const User = require('../models/user.js')
 
-router.get('/getUsers', async (req, res) => {
+const getAllUsers = async (req, res) => {
     const allUsers = await User.find({});
-    res.send(allUsers)
-})
+    console.log("All users:", allUsers)
 
-router.post('/addUser', async (req, res) => {
+    res.json(allUsers)
+}
+
+const addUser = async (req, res) => {
     const user = new User({
         _id: new mongoose.Types.ObjectId,
         username: req.body.username,
@@ -19,12 +20,13 @@ router.post('/addUser', async (req, res) => {
         password: req.body.password
     })
 
-    const queryStatus = await user.save();
-    
-    res.status(200).json({
+    const savedUser = await user.save();
+    console.log("Saved user: ", savedUser)
+
+    res.json({
         message: "User successfuly added!",
         createdUser: user
     })
-})
+}
 
-module.exports = router;
+module.exports = { getAllUsers, addUser };
