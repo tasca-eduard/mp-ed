@@ -3,30 +3,58 @@ const router = express.Router();
 router.use(express.json());
 
 const mongoose = require('mongoose');
-const User = require('../models/user.js')
+const UserModel = require('../models/user.js')
 
-const getAllUsers = async (req, res) => {
-    const allUsers = await User.find({});
-    console.log("All users:", allUsers)
+class userController {
+    constructor(model) {
+        this.model = model;
+        this.queryResult = null;
+    }
 
-    res.json(allUsers)
+    getAllUsers = async (req, res) => {
+        this.queryResult = await this.model.find({});
+        console.log("All users:", this.queryResult)
+    
+        res.json(this.queryResult)
+    }
+    
+    addUser = async (req, res) => {
+        const user = new this.model({
+            _id: new mongoose.Types.ObjectId,
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password
+        })
+    
+        this.queryResult = await user.save();
+        console.log("Saved user: ", this.queryResult)
+    
+        res.json({
+            message: "User successfuly added!",
+            createdUser: this.queryResult
+        })
+    }
+    
+    findUser = async (req, res) => {
+        const user = {
+            email: req.body.email,
+            password: req.body.password
+        }
+    
+        this.queryResult = await this.model.findOne({
+            email: user.email,
+            password: user.password
+        })
+    
+        console.log('Found user: ', this.queryResult)
+
+        res.json({
+            message: "User found",
+            userFound: this.queryResult
+        })
+    }
 }
 
-const addUser = async (req, res) => {
-    const user = new User({
-        _id: new mongoose.Types.ObjectId,
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    })
+const controller = new userController(UserModel);
 
-    const savedUser = await user.save();
-    console.log("Saved user: ", savedUser)
-
-    res.json({
-        message: "User successfuly added!",
-        createdUser: user
-    })
-}
-
-module.exports = { getAllUsers, addUser };
+module.exports = { controller };
